@@ -62,7 +62,7 @@ class Lexer():
             # 去除注释
             if not t:
                 continue
-            
+
             tokens.append(t)
             # 程序结束
             if Token.tk_type(t) == "eof":
@@ -141,7 +141,9 @@ class Lexer():
             while Lexer.isdigit(self.peek()):
                 r = r + self.next()
 
-        return Token.make_tk("num", float(r) if "." in r else int(r))
+        val = float(r) if "." in r else int(r)
+
+        return Token.make_tk("num", val)
 
     def id(self):
         "匹配 id"
@@ -163,11 +165,15 @@ class Lexer():
         if t == "eof":
             return Token.make_tk("eof")
 
-        if t in Lexer.symbols:
+        # 处理负数的情况
+        elif t == "-":
+            return self.num()
+
+        elif t in Lexer.symbols:
             self.next()
             return Token.make_tk(t)
 
-        if t == "=":
+        elif t == "=":
             self.next()
             if self.peek() == "=":
                 self.next()
@@ -175,7 +181,7 @@ class Lexer():
             else:
                 return Token.make_tk("=")
 
-        if t == ">":
+        elif t == ">":
             self.next()
             if self.peek() == "=":
                 self.next()
@@ -183,7 +189,7 @@ class Lexer():
             else:
                 return Token.make_tk(">")
 
-        if t == "<":
+        elif t == "<":
             self.next()
             if self.peek() == "=":
                 self.next()
@@ -191,7 +197,7 @@ class Lexer():
             else:
                 return Token.make_tk("<")
 
-        if t == "!":
+        elif t == "!":
             self.next()
             if self.peek() == "=":
                 self.next()
@@ -200,17 +206,17 @@ class Lexer():
             else:
                 return Token.make_tk("!")
 
-        if t == '"':
+        elif t == '"':
             return self.is_string()
 
-        if Lexer.isdigit(t):
+        elif Lexer.isdigit(t):
             return self.num()
 
-        if Lexer.isletter_(t):
+        elif Lexer.isletter_(t):
             return self.id()
-        
+
         # 去除注释
-        if t == "#":
+        elif t == "#":
             curr = self.next()
             while curr != "\n":
                 curr = self.next()
@@ -221,7 +227,7 @@ class Lexer():
 
 if __name__ == "__main__":
     prog = """
-    var a = 1000
+    var a = -1000
     forward a
     """
 

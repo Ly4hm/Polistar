@@ -197,15 +197,16 @@ class Polistar(MakeTokenizer):
 
     def assign_stat(self, name=None):
         "无 var 声明情况下赋值"
-        if name == None:
+        if name is None:
             name = self.match("id")
         # 赋值的情况
         if self.peek() == "=":
             self.match("=")
             value = self.expr()
+            return ["assign_stat", name, value]        
+        # 调用变量的情况
         else:
-            value = None
-        return ["assign_stat", name, value]
+            return ["use_var", name]
 
     def func_call(self, name=None):
         "匹配函数调用"
@@ -401,7 +402,7 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    var a = 1000
+    var a = -1000
     forward a
     """
     # prog = """

@@ -24,6 +24,11 @@ def evaluate_expression(expr):
     """Evaluate a simple arithmetic expression."""
     if expr[0] == "num":
         return expr[1]
+    
+    # 使用变量的情况
+    elif expr[0] == "use_var":
+        var_name = Token.tk_val(expr[1])
+        return namespace[var_name]
 
     elif expr[0] == "tuple":  # 处理数组表达式
         return (evaluate_expression(expr[1]), evaluate_expression(expr[2]))
@@ -45,13 +50,23 @@ def evaluate_expression(expr):
     else:
         raise ValueError(f"Unsupported expression: {expr}")
 
+# 定义全局变量范围
+namespace = {}
 
 def execute_command(command):
     """Execute a single turtle command."""
     cmd = Token.tk_type(command)
     args = command[1:]
-
-    if cmd == "set_value":
+    
+    # 设置变量
+    if cmd == "var_decl":
+        key = Token.tk_val(args[0])
+        val = evaluate_expression(args[1])
+        namespace[key] = val
+            
+    
+    # 设置画笔参数
+    elif cmd == "set_value":
         attribute = Token.tk_val(args[0])
 
         if attribute == "color":
@@ -72,6 +87,7 @@ def execute_command(command):
         else:
             raise ValueError(f"Unsupported attribute: {attribute}")
 
+    # turtle 操作
     elif cmd == "forward":
         distance = evaluate_expression(args[0])
         t.forward(distance)
@@ -134,10 +150,10 @@ def execute_program(program):
 
 if __name__ == "__main__":
     prog = """
-    var a = 1000
+    var a = -50
     # 设置画笔具体属性
     set color "#dd7694"
-    set initial_point (0,100)
+    set initial_point (-60,100)
     set width 10 + 1
     # 前进
     forward a
@@ -165,14 +181,13 @@ if __name__ == "__main__":
 
     polistar = Polistar(Lexer(prog).parse())
 
-    tokens = ['program',
- [['set_value', ['id', 'color'], ['id', 'red']],
-  ['set_value', ['id', 'initial_point'], ['num', 0], ['num', 100]],
-  ['clear'],
-  ['hide'],
-  ['circle', ['num', 10]],
-  ['circle', ['num', 90], ['num', 99]],
-  ]]
+    tokens = [
+        "program",
+        [
+            ["var_decl", ["id", "a"], ["num", 1000]],
+            ["forward", ["use_var", ["id", "a"]]],
+        ],
+    ]
 
     execute_program(polistar.parse())
     # execute_program(tokens)
