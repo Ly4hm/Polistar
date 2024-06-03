@@ -22,7 +22,7 @@ def hex_to_rgb(hex_color):
 
 def evaluate_expression(expr):
     """Evaluate a simple arithmetic expression."""
-    if expr[0] == "num":
+    if expr[0] == "num" or expr[0] == "str":
         return expr[1]
     
     # 使用变量的情况
@@ -70,7 +70,7 @@ def execute_command(command):
         attribute = Token.tk_val(args[0])
 
         if attribute == "color":
-            value = Token.tk_val(args[1])
+            value = evaluate_expression(args[1])
             if "#" in value:
                 value = hex_to_rgb(value)
             t.color(value)
@@ -151,8 +151,9 @@ def execute_program(program):
 if __name__ == "__main__":
     prog = """
     var a = -50
+    var color = "yellow"
     # 设置画笔具体属性
-    set color "#dd7694"
+    set color color
     set initial_point (-60,100)
     set width 10 + 1
     # 前进
@@ -164,11 +165,11 @@ if __name__ == "__main__":
     penup
     forward 300
     pendown
+    set color "#0a9d5b"
     forward 20
     left 150
     back 100
     set initial_point (0,0)
-    set color black
     forward 60
     set initial_point (0,0)
     circle 100
@@ -179,13 +180,15 @@ if __name__ == "__main__":
     save "test.png"
     """
 
+
     polistar = Polistar(Lexer(prog).parse())
 
     tokens = [
         "program",
         [
-            ["var_decl", ["id", "a"], ["num", 1000]],
-            ["forward", ["use_var", ["id", "a"]]],
+            ["var_decl", ["id", "a"], ["str", "yellow"]],
+            ["set_value", ["id", "color"], ["use_var", ["id", "a"]]],
+            ["forward", ["num", 100]],
         ],
     ]
 

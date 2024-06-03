@@ -172,7 +172,8 @@ class Polistar(MakeTokenizer):
 
         # 设置画笔颜色
         if Token.tk_val(name) == "color":
-            return ["set_value", name, self.next()]
+            val = self.statement()
+            return ["set_value", name, val]
         # 设置初始点
         if Token.tk_val(name) == "initial_point":
             self.match("(")
@@ -300,13 +301,11 @@ class Polistar(MakeTokenizer):
     def penup(self):
         "抬笔操作"
         self.match("penup")
-        args = self.statement()
         return ["penup"]
 
     def pendown(self):
         "落笔操作"
         self.match("pendown")
-        args = self.statement()
         return ["pendown"]
 
     def right(self):
@@ -402,12 +401,14 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    var a = -1000
-    forward a
+    set color "#0a9d5b"
+    set width 10 + 1
+    penup
+    forward 100
+    left 90
+    pendown
+    forward 100
     """
-    # prog = """
-    # var a = 2 + 1
-    # """
 
     parser = Polistar(Lexer(prog).parse())
     pprint(parser.parse())

@@ -227,7 +227,7 @@ class Lexer():
 
 if __name__ == "__main__":
     prog = """
-    var a = -1000
+    var a = "red"
     forward a
     """
 
