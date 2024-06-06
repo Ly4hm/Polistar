@@ -60,6 +60,20 @@ def evaluate_expression(expr):
             return left_operand * right_operand
         elif operator == "/":
             return left_operand / right_operand
+        
+        # 比较运算符
+        elif operator == "==":
+            return left_operand == right_operand
+        elif operator == "!=":
+            return left_operand != right_operand
+        elif operator == "<":
+            return left_operand < right_operand
+        elif operator == "<=":
+            return left_operand <= right_operand
+        elif operator == ">":
+            return left_operand > right_operand
+        elif operator == ">=":
+            return left_operand >= right_operand
 
     else:
         raise ValueError(f"Unsupported expression: {expr}")
@@ -122,6 +136,19 @@ def execute_command(command):
     elif cmd == "func_call":
         func_name = Token.tk_val(args[0])
         return call_function(func_name, args[1])
+
+    # 对if语句块的支持
+    elif cmd == "if":
+        condition = args[0]
+        true_branch = args[1]
+        false_branch = args[2]
+
+        if evaluate_expression(condition):
+            for cmd in true_branch:
+                execute_command(cmd)
+        else:
+            for cmd in false_branch:
+                execute_command(cmd)
 
     # 设置画笔参数
     elif cmd == "set_value":
@@ -253,13 +280,13 @@ if __name__ == "__main__":
     """
 
     prog = """
-        fun test() {
-            var a = random(1, 10)
-            return a
-        }
-
-        print(test())
-        """
+    if (1+1 == 2) {
+        var a = random(1,2)
+        print("yes")
+    } else {
+        print("no")
+    }
+    """
 
     polistar = Polistar(Lexer(prog).parse())
 

@@ -255,10 +255,13 @@ class Polistar(MakeTokenizer):
         if self.peek() == "{":
             self.match("{")
 
-        true_s = self.statement()
+        true_s = []
+        false_s = []
 
-        if self.peek() == "}":
-            self.match("}")
+        while self.peek() != "}":
+            true_s.append(self.statement())
+            
+        self.match("}")
 
         # 处理 else 语句
         if self.peek() == "else":
@@ -266,7 +269,10 @@ class Polistar(MakeTokenizer):
             if self.peek() == "if":
                 false_s = self.if_stat()
             else:
-                false_s = self.statement()
+                self.match("{")
+                while self.peek() != "}":
+                    false_s.append(self.statement())
+                self.match("}")
         else:
             false_s = None
         return ["if", cond, true_s, false_s]
@@ -425,15 +431,13 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    fun test() {
-        var a = random(1, 10)
-        print("随机值：", a)
-        return a
+    if (1+1 == 2) {
+        var a = random(1,2)
+        print("yes")
+    } else {
+        print("no")
     }
-    
-    print(test())
     """
-
 
     parser = Polistar(Lexer(prog).parse())
     pprint(parser.parse())
