@@ -237,7 +237,7 @@ class Polistar(MakeTokenizer):
         "匹配 return 语句"
         self.match("return")
         if self.peek() != ";":
-            e = self.expr()
+            e = self.statement()
         else:
             e = None
         if self.peek() == ";":
@@ -425,11 +425,15 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    var a = 1
-    var t = random(1,0)
-    print("done")
-    set tracer False
+    fun test() {
+        var a = random(1, 10)
+        print("随机值：", a)
+        return a
+    }
+    
+    print(test())
     """
+
 
     parser = Polistar(Lexer(prog).parse())
     pprint(parser.parse())

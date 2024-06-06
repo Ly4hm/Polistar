@@ -232,10 +232,12 @@ class Lexer():
 
 if __name__ == "__main__":
     prog = """
-    var a = "red"
-    forward a
-    random(1,0)
-
+    fun test() {
+        var a = random(1, 10)
+        return a
+    }
+    
+    print(test())
     """
 
     lexer = Lexer(prog)

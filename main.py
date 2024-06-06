@@ -43,6 +43,10 @@ def evaluate_expression(expr):
             evaluate_expression(args[0]), evaluate_expression(args[1])
         )
 
+    elif expr[0] == "func_call":
+        func_name = Token.tk_val(expr[1])
+        return call_function(func_name, expr[2])
+
     elif isinstance(expr, list):
         operator = expr[0]
 
@@ -63,6 +67,40 @@ def evaluate_expression(expr):
 # 定义全局变量范围
 namespace = {}
 
+
+# 增加对函数的支持
+def call_function(func_name, args):
+    "解析调用函数"
+    if func_name not in namespace:
+        raise ValueError(f"Function {func_name} is not defined.")
+
+    func_params, func_body = namespace[func_name]
+    local_namespace = {}
+
+    for param, arg in zip(func_params, args):
+        local_namespace[Token.tk_val(param)] = evaluate_expression(arg)
+
+    return execute_function_body(func_body, local_namespace)
+
+
+def execute_function_body(body, local_namespace):
+    "执行函数体"
+    global namespace
+    original_namespace = namespace
+    namespace = local_namespace
+
+    return_value = None
+    for command in body:
+        if Token.tk_type(command) == "return":
+            return_value = evaluate_expression(command[1])
+            break
+        else:
+            execute_command(command)
+
+    namespace = original_namespace
+    return return_value
+
+
 def execute_command(command):
     """Execute a single turtle command."""
     cmd = Token.tk_type(command)
@@ -73,6 +111,17 @@ def execute_command(command):
         key = Token.tk_val(args[0])
         val = evaluate_expression(args[1])
         namespace[key] = val
+
+    # 对函数的支持
+    elif cmd == "fun_def":
+        func_name = Token.tk_val(args[0])
+        func_params = args[1]
+        func_body = args[2]
+        namespace[func_name] = (func_params, func_body)
+
+    elif cmd == "func_call":
+        func_name = Token.tk_val(args[0])
+        return call_function(func_name, args[1])
 
     # 设置画笔参数
     elif cmd == "set_value":
@@ -204,21 +253,15 @@ if __name__ == "__main__":
     """
 
     prog = """
-    var a = random(10,100)
-    print("随机数为：",a)
-    forward a
-    """
+        fun test() {
+            var a = random(1, 10)
+            return a
+        }
+
+        print(test())
+        """
 
     polistar = Polistar(Lexer(prog).parse())
-
-    tokens = [
-        "program",
-        [
-            ["var_decl", ["id", "a"], ["str", "yellow"]],
-            ["set_value", ["id", "color"], ["use_var", ["id", "a"]]],
-            ["forward", ["num", 100]],
-        ],
-    ]
 
     execute_program(polistar.parse())
     # execute_program(tokens)
