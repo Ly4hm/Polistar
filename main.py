@@ -24,6 +24,9 @@ def evaluate_expression(expr):
     """Evaluate a simple arithmetic expression."""
     if expr[0] == "num" or expr[0] == "str":
         return expr[1]
+    # bool
+    elif expr[0] == "bool":
+        return eval(expr[1])
     
     # 使用变量的情况
     elif expr[0] == "use_var":
@@ -74,7 +77,7 @@ def execute_command(command):
             if "#" in value:
                 value = hex_to_rgb(value)
             t.color(value)
-        elif attribute == "initial_point":
+        elif attribute == "xy":
             t.penup()
             value1 = evaluate_expression(args[-2])
             value2 = evaluate_expression(args[-1])
@@ -84,6 +87,10 @@ def execute_command(command):
             args = args[1:]
             pensize = evaluate_expression(args[0])
             t.pensize(pensize)
+        elif attribute == "tracer":
+            args = evaluate_expression(args[1])
+            turtle.tracer(args)
+            
         else:
             raise ValueError(f"Unsupported attribute: {attribute}")
 
@@ -137,7 +144,11 @@ def execute_command(command):
             t.circle(Token.tk_val(args[0]), Token.tk_val(args[1]))
         elif len(args) == 1:
             t.circle(Token.tk_val(args[0]))
+            
+    elif cmd == "print":
+        print(args[0][0][1])
 
+    
     else:
         raise ValueError(f"Unsupported command: {cmd}")
 
@@ -154,8 +165,10 @@ if __name__ == "__main__":
     var color = "yellow"
     # 设置画笔具体属性
     set color color
-    set initial_point (-60,100)
+    set xy (-60,100)
     set width 10 + 1
+    # 设置为直接绘制完成
+    set tracer False
     # 前进
     forward a
     left 60
@@ -169,17 +182,17 @@ if __name__ == "__main__":
     forward 20
     left 150
     back 100
-    set initial_point (0,0)
+    set xy (0,0)
     forward 60
-    set initial_point (0,0)
+    set xy (0,0)
     circle 100
     set color "black"
-    set initial_point (50,50)
+    set xy (50,50)
     circle 100 120
     # 保存图片
     save "test.png"
+    print("done")
     """
-
 
     polistar = Polistar(Lexer(prog).parse())
 

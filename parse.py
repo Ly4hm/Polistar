@@ -1,6 +1,7 @@
 from lexer import Token
 from lexer import Lexer
 from pprint import pprint
+import random
 
 class MakeTokenizer(Token):
     "处理token的基类"
@@ -60,7 +61,7 @@ class Polistar(MakeTokenizer):
                 self.match(")")
             return t
 
-        if self.peek() == "num" or self.peek() == "str":
+        if self.peek() == "num" or self.peek() == "str" or self.peek() == "bool":
             return self.next()
 
         if self.peek() == "(":
@@ -80,6 +81,8 @@ class Polistar(MakeTokenizer):
             return self.var_decl()
         elif self.peek() == "print":
             return self.print_stat()
+        elif self.peek() == "random":
+            return self.randomImpl()
         elif self.peek() == "=":
             return self.var_decl()
         elif self.peek() == "eof":
@@ -168,14 +171,15 @@ class Polistar(MakeTokenizer):
         "匹配设置画笔变量"
         self.match("set")
         name = self.match("id")
+        keyword = Token.tk_val(name)
         t = []
 
         # 设置画笔颜色
-        if Token.tk_val(name) == "color":
+        if keyword == "color":
             val = self.statement()
             return ["set_value", name, val]
         # 设置初始点
-        if Token.tk_val(name) == "initial_point":
+        elif keyword == "xy":
             self.match("(")
             while self.peek() != ")":
                 if self.peek() == ",":
@@ -184,9 +188,16 @@ class Polistar(MakeTokenizer):
             self.match(")")
             return ["set_value", name] + t
         # 设置画笔粗细
-        if Token.tk_val(name) == "width":
+        elif keyword == "width":
             val = self.statement()
             return ["set_value", name, val]
+        # 设置是否显示轨迹
+        elif keyword == "tracer":
+            val = self.statement()
+            return ["set_value", name, val]
+        
+        else:
+            raise Exception("unkown turtle's value {}".format(keyword))
 
     def assign_or_func(self):
         "判断是赋值还是函数调用"
@@ -285,6 +296,19 @@ class Polistar(MakeTokenizer):
             args.append(self.statement())
         self.match(")")
         return ["print", args]
+
+    def randomImpl(self):
+        "定义随机数生成函数"
+        self.match("random")
+        self.match("(")
+        args = []
+        while self.peek() != ")":
+            # 处理多个参数的情况
+            if self.peek() == ",":
+                self.match(",")
+            args.append(self.statement())
+        self.match(")")
+        return ["random", args]
 
     def forward(self):
         "处理forward 语句"
@@ -401,13 +425,10 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    set color "#0a9d5b"
-    set width 10 + 1
-    penup
-    forward 100
-    left 90
-    pendown
-    forward 100
+    var a = 1
+    var t = random(1,0)
+    print("done")
+    set tracer False
     """
 
     parser = Polistar(Lexer(prog).parse())

@@ -43,7 +43,8 @@ class Lexer():
         "save",
         "clear",
         "hide",
-        "circle"
+        "circle",
+        "random"
     ]
     blank_lst = [" ", "\t", "\r", "\n"]
     symbols = [",", ":", "+", "-", "*", "/", ";", "(", ")", "{", "}", "[", "]"]
@@ -152,8 +153,12 @@ class Lexer():
         while Lexer.isletter_or_digit(self.peek()):
             r = r + self.next()
 
+        # 处理关键字
         if r in Lexer.keywords:
             return Token.make_tk(r)
+        # 处理bool值
+        elif r == "False" or r == "True":
+            return Token.make_tk("bool", r)
 
         return Token.make_tk("id", r)
 
@@ -229,6 +234,8 @@ if __name__ == "__main__":
     prog = """
     var a = "red"
     forward a
+    random(1,0)
+
     """
 
     lexer = Lexer(prog)
