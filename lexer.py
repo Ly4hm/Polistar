@@ -232,10 +232,10 @@ class Lexer():
 
 if __name__ == "__main__":
     prog = """
-    if (1+1 == 2) {
-        print("yes")
-    } else {
-        print("no")
+    var a = 1
+    while (a < 3) {
+        print(a)
+        a = a + 1
     }
     """
 

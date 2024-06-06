@@ -59,7 +59,7 @@ class Polistar(MakeTokenizer):
                         self.match(",")
                     self.expr()
                 self.match(")")
-            return t
+            return ["use_var", Token.tk_val(t)]
 
         if self.peek() == "num" or self.peek() == "str" or self.peek() == "bool":
             return self.next()
@@ -431,11 +431,10 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    if (1+1 == 2) {
-        var a = random(1,2)
-        print("yes")
-    } else {
-        print("no")
+    var a = 1
+    while (a < 3) {
+        print(a)
+        a = a + 1
     }
     """
 
