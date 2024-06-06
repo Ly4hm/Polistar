@@ -1,4 +1,5 @@
 import os
+import random
 import turtle
 
 from PIL import Image
@@ -27,7 +28,7 @@ def evaluate_expression(expr):
     # bool
     elif expr[0] == "bool":
         return eval(expr[1])
-    
+
     # 使用变量的情况
     elif expr[0] == "use_var":
         var_name = Token.tk_val(expr[1])
@@ -35,6 +36,12 @@ def evaluate_expression(expr):
 
     elif expr[0] == "tuple":  # 处理数组表达式
         return (evaluate_expression(expr[1]), evaluate_expression(expr[2]))
+
+    elif expr[0] == "random":
+        args = expr[1]
+        return random.uniform(
+            evaluate_expression(args[0]), evaluate_expression(args[1])
+        )
 
     elif isinstance(expr, list):
         operator = expr[0]
@@ -60,14 +67,13 @@ def execute_command(command):
     """Execute a single turtle command."""
     cmd = Token.tk_type(command)
     args = command[1:]
-    
+
     # 设置变量
     if cmd == "var_decl":
         key = Token.tk_val(args[0])
         val = evaluate_expression(args[1])
         namespace[key] = val
-            
-    
+
     # 设置画笔参数
     elif cmd == "set_value":
         attribute = Token.tk_val(args[0])
@@ -90,7 +96,7 @@ def execute_command(command):
         elif attribute == "tracer":
             args = evaluate_expression(args[1])
             turtle.tracer(args)
-            
+
         else:
             raise ValueError(f"Unsupported attribute: {attribute}")
 
@@ -138,17 +144,16 @@ def execute_command(command):
         t.clear()
     elif cmd == "hide":
         t.hideturtle()
-        
+
     elif cmd == "circle":
         if len(args) == 2:
             t.circle(Token.tk_val(args[0]), Token.tk_val(args[1]))
         elif len(args) == 1:
             t.circle(Token.tk_val(args[0]))
-            
+
     elif cmd == "print":
         print(args[0][0][1])
 
-    
     else:
         raise ValueError(f"Unsupported command: {cmd}")
 
@@ -166,7 +171,7 @@ if __name__ == "__main__":
     # 设置画笔具体属性
     set color color
     set xy (-60,100)
-    set width 10 + 1
+    set width 10 + random(1,10)
     # 设置为直接绘制完成
     set tracer False
     # 前进
@@ -192,6 +197,20 @@ if __name__ == "__main__":
     # 保存图片
     save "test.png"
     print("done")
+    """
+
+    prog = """
+    var a = random(10,100)
+    print(a)
+    set width random(1,10)
+    forward a
+    left 90
+    forward a
+    left 90
+    forward a
+    left 90
+    forward a
+    left 90
     """
 
     polistar = Polistar(Lexer(prog).parse())
