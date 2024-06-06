@@ -152,7 +152,11 @@ def execute_command(command):
             t.circle(Token.tk_val(args[0]))
 
     elif cmd == "print":
-        print(args[0][0][1])
+        args = args[0]
+        lst = []
+        for i in args:
+            lst.append(str(evaluate_expression(i)))
+        print("".join(lst))
 
     else:
         raise ValueError(f"Unsupported command: {cmd}")
@@ -201,16 +205,8 @@ if __name__ == "__main__":
 
     prog = """
     var a = random(10,100)
-    print(a)
-    set width random(1,10)
+    print("随机数为：",a)
     forward a
-    left 90
-    forward a
-    left 90
-    forward a
-    left 90
-    forward a
-    left 90
     """
 
     polistar = Polistar(Lexer(prog).parse())
