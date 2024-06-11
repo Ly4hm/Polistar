@@ -21,6 +21,13 @@ def hex_to_rgb(hex_color):
     return rgb
 
 
+def extract_list(lst):
+    "解析多层列表中的值"
+    while len(lst) == 1:
+        lst = lst[0]
+    return lst[1]
+
+
 def evaluate_expression(expr):
     """Evaluate a simple arithmetic expression."""
     if expr[0] == "num" or expr[0] == "str":
@@ -289,13 +296,15 @@ if __name__ == "__main__":
     print("done")
     """
 
-
     prog = """
-    var a = 10
-    while (a > 1) {
-        print(a)
-        var a = a - 1
+    fun test() {
+        var a = random(1, 10)
+        return a
     }
+    var c = test()
+    print(c)
+    
+    forward c * 10
     """
 
     polistar = Polistar(Lexer(prog).parse())

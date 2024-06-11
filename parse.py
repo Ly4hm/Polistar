@@ -52,16 +52,10 @@ class Polistar(MakeTokenizer):
         if curr == "id":
             t = self.next()
             if self.peek() == "(":
-                self.match("(")
-                while self.peek() != ")":
-                    # 去除多个参数的情况
-                    if self.peek() == ",":
-                        self.match(",")
-                    self.expr()
-                self.match(")")
-            # 非函数调用则为 变量调用
-            return ["use_var", Token.tk_val(t)]
-        
+                return self.func_call(t)
+            else:
+                return self.assign_stat(t)
+
         # 处理负数
         if self.peek() == "-":
             self.next()
@@ -169,7 +163,7 @@ class Polistar(MakeTokenizer):
         name = self.match("id")
         if self.peek() == "=":
             self.match("=")
-            value = self.expr()
+            value = self.statement()
         else:
             value = None
         return ["var_decl", name, value]
@@ -203,7 +197,7 @@ class Polistar(MakeTokenizer):
         elif keyword == "tracer":
             val = self.statement()
             return ["set_value", name, val]
-        
+
         else:
             raise Exception("unkown turtle's value {}".format(keyword))
 
@@ -268,7 +262,7 @@ class Polistar(MakeTokenizer):
 
         while self.peek() != "}":
             true_s.append(self.statement())
-            
+
         self.match("}")
 
         # 处理 else 语句
@@ -397,10 +391,7 @@ class Polistar(MakeTokenizer):
             return self.if_stat()
         elif curr == "while":
             return self.while_stat()
-        
-        # 这个地方会已经在expr中重新实现，这里会影响表达式中的变量使用
-        # elif curr == "id":
-        #     return self.assign_or_func()
+
         elif curr == ";":
             self.next()
             return None  # 跳过分号，这里只是一个空语句
@@ -441,8 +432,12 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    var a = 15-10
-    var a = a + 1
+    fun test() {
+        var a = random(1, 10)
+        return a
+    }
+    var c = test()
+    print(c)
     """
 
     parser = Polistar(Lexer(prog).parse())

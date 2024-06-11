@@ -12,9 +12,14 @@ class Token:
         return t[0]
 
     @staticmethod
-    def tk_val(t):
+    def tk_val(lst):
         "返回指定token的值"
-        return t[1] if len(t) > 1 else None
+        if isinstance(lst[1], list):
+            return Token.tk_val(lst[1])
+        
+        while len(lst) == 1:
+            lst = lst[0]
+        return lst[1]
 
 
 class Lexer():
