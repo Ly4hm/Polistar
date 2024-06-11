@@ -59,6 +59,7 @@ class Polistar(MakeTokenizer):
                         self.match(",")
                     self.expr()
                 self.match(")")
+            # 非函数调用则为 变量调用
             return ["use_var", Token.tk_val(t)]
 
         if self.peek() == "num" or self.peek() == "str" or self.peek() == "bool":
@@ -389,8 +390,10 @@ class Polistar(MakeTokenizer):
             return self.if_stat()
         elif curr == "while":
             return self.while_stat()
-        elif curr == "id":
-            return self.assign_or_func()
+        
+        # 这个地方会已经在expr中重新实现，这里会影响表达式中的变量使用
+        # elif curr == "id":
+        #     return self.assign_or_func()
         elif curr == ";":
             self.next()
             return None  # 跳过分号，这里只是一个空语句
@@ -431,11 +434,10 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    var a = 1
-    while (a < 3) {
-        print(a)
-        a = a + 1
-    }
+    var a = 10
+    set width a
+    set color "red"
+    forward a + 100
     """
 
     parser = Polistar(Lexer(prog).parse())

@@ -31,7 +31,8 @@ def evaluate_expression(expr):
 
     # 使用变量的情况
     elif expr[0] == "use_var":
-        var_name = Token.tk_val(expr[1])
+        var_name = Token.tk_val(expr)
+        # TODO: bug 修复
         return namespace[var_name]
 
     elif expr[0] == "tuple":  # 处理数组表达式
@@ -149,6 +150,15 @@ def execute_command(command):
         else:
             for cmd in false_branch:
                 execute_command(cmd)
+    
+    # 对 while 语句的支持
+    elif cmd == "while":
+        condition = args[0]
+        content = args[1]
+        
+        if evaluate_expression(condition):
+            for line in content:
+                execute_command(line)
 
     # 设置画笔参数
     elif cmd == "set_value":
@@ -286,6 +296,13 @@ if __name__ == "__main__":
     } else {
         print("no")
     }
+    """
+
+    prog = """
+    var a = 10
+    a = a - 5
+    set width a
+    set color "red"
     """
 
     polistar = Polistar(Lexer(prog).parse())
