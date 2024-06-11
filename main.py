@@ -166,7 +166,21 @@ def execute_command(command):
         while evaluate_expression(condition):
             for line in content:
                 execute_command(line)
-
+                
+    # 对 for 语句的支持
+    elif cmd == "for":
+        make_var = args[0]
+        expr = args[1]
+        fin = args[2]
+        body = args[3]
+        # 准备变量
+        execute_command(make_var)
+        
+        while evaluate_expression(expr):
+            for line in body:
+                execute_command(line)
+            execute_command(fin)
+        
     # 设置画笔参数
     elif cmd == "set_value":
         attribute = Token.tk_val(args[0])
@@ -301,11 +315,8 @@ if __name__ == "__main__":
         var a = random(1, 10)
         return a
     }
-    var c = test()
-    print(c)
     
-    while (c > 1) {
-        var c = c - 1
+    for (var c = test(); c > 1; var c = c -1) {
         print(c)
     }
     
