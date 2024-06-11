@@ -68,7 +68,7 @@ def evaluate_expression(expr):
             return left_operand * right_operand
         elif operator == "/":
             return left_operand / right_operand
-        
+
         # 比较运算符
         elif operator == "==":
             return left_operand == right_operand
@@ -85,6 +85,7 @@ def evaluate_expression(expr):
 
     else:
         raise ValueError(f"Unsupported expression: {expr}")
+
 
 # 定义全局变量范围
 namespace = {}
@@ -157,16 +158,25 @@ def execute_command(command):
         else:
             for cmd in false_branch:
                 execute_command(cmd)
-    
+
     # 对 while 语句的支持
     elif cmd == "while":
         condition = args[0]
         content = args[1]
-        
+
         while evaluate_expression(condition):
             for line in content:
                 execute_command(line)
-                
+
+    # 对 repeat 语句的支持
+    elif cmd == "repeat":
+        times = Token.tk_val(args[0])
+        body = args[1]
+
+        for i in range(0, times):
+            for line in body:
+                execute_command(line)
+
     # 对 for 语句的支持
     elif cmd == "for":
         make_var = args[0]
@@ -175,12 +185,12 @@ def execute_command(command):
         body = args[3]
         # 准备变量
         execute_command(make_var)
-        
+
         while evaluate_expression(expr):
             for line in body:
                 execute_command(line)
             execute_command(fin)
-        
+
     # 设置画笔参数
     elif cmd == "set_value":
         attribute = Token.tk_val(args[0])
@@ -279,17 +289,9 @@ def execute_program(program):
 
 if __name__ == "__main__":
     prog = """
-    fun test() {
-        var a = random(1, 10)
-        return a
+    repeat 10 {
+        print("heelo")
     }
-    
-    for (var c = test(); c > 1; var c = c -1) {
-        print(c)
-    }
-    
-    forward c * 100
-    maintain
     """
 
     polistar = Polistar(Lexer(prog).parse())

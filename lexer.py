@@ -36,6 +36,7 @@ class Lexer():
         "false",
         "while",
         "for",
+        "repeat",
         "in",
         "range",
         "penup",
@@ -234,8 +235,8 @@ class Lexer():
 
 if __name__ == "__main__":
     prog = """
-    for (var i = 1; i < 10; i = i+1) {
-        print(i)
+    repeat 10 {
+        print("heelo")
     }
     """
 

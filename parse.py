@@ -312,6 +312,17 @@ class Polistar(MakeTokenizer):
         self.match("}")
         return ["for", make_var, expr, fin, body]
 
+    def repeat_stat(self):
+        "实现对循环体循环n次"
+        self.match("repeat")
+        times = self.match("num")
+        self.match("{")
+        body = []
+        while self.peek() != "}":
+            body.append(self.statement())
+        self.match("}")
+        return ["repeat", times, body]
+
     def print_stat(self):
         "解析打印语句"
         self.match("print")
@@ -387,7 +398,7 @@ class Polistar(MakeTokenizer):
         "隐藏光标"
         self.match("hide")
         return ["hide"]
-    
+
     def maintain(self):
         "保持turtle窗口打开"
         self.match("maintain")
@@ -418,6 +429,8 @@ class Polistar(MakeTokenizer):
             return self.while_stat()
         elif curr == "for":
             return self.for_stat()
+        elif curr == "repeat":
+            return self.repeat_stat()
 
         elif curr == ";":
             self.next()
@@ -461,8 +474,8 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    for (var i = 1; i < 10; i = i+1) {
-        print(i)
+    repeat 10 {
+        print("heelo")
     }
     """
 
