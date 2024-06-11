@@ -170,10 +170,6 @@ class Lexer():
         if t == "eof":
             return Token.make_tk("eof")
 
-        # 处理负数的情况
-        elif t == "-":
-            return self.num()
-
         elif t in Lexer.symbols:
             self.next()
             return Token.make_tk(t)
@@ -232,11 +228,8 @@ class Lexer():
 
 if __name__ == "__main__":
     prog = """
-    var a = 1
-    while (a < 3) {
-        print(a)
-        a = a + 1
-    }
+    var a = -10
+    var a = a + 1
     """
 
     lexer = Lexer(prog)

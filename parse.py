@@ -61,6 +61,13 @@ class Polistar(MakeTokenizer):
                 self.match(")")
             # 非函数调用则为 变量调用
             return ["use_var", Token.tk_val(t)]
+        
+        # 处理负数
+        if self.peek() == "-":
+            self.next()
+            if self.peek() == "num":
+                t = self.next()
+                return ["num", -t[1]]
 
         if self.peek() == "num" or self.peek() == "str" or self.peek() == "bool":
             return self.next()
@@ -434,11 +441,8 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    var a = 1
-    while (a < 3) {
-        print(a)
-        var a = a + 1
-    }
+    var a = 15-10
+    var a = a + 1
     """
 
     parser = Polistar(Lexer(prog).parse())

@@ -289,20 +289,12 @@ if __name__ == "__main__":
     print("done")
     """
 
-    prog = """
-    if (1+1 == 2) {
-        var a = random(1,2)
-        print("yes")
-    } else {
-        print("no")
-    }
-    """
 
     prog = """
-    var a = 1
-    while (a < 26) {
+    var a = 10
+    while (a > 1) {
         print(a)
-        var a = a + 1
+        var a = a - 1
     }
     """
 
