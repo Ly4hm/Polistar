@@ -304,7 +304,12 @@ if __name__ == "__main__":
     var c = test()
     print(c)
     
-    forward c * 10
+    while (c > 1) {
+        var c = c - 1
+        print(c)
+    }
+    
+    forward c * 100
     """
 
     polistar = Polistar(Lexer(prog).parse())

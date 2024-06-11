@@ -233,8 +233,9 @@ class Lexer():
 
 if __name__ == "__main__":
     prog = """
-    var a = -10
-    var a = a + 1
+    for (var i = 1; i < 10; i = i+1) {
+        print(i)
+    }
     """
 
     lexer = Lexer(prog)

@@ -3,6 +3,7 @@ from lexer import Lexer
 from pprint import pprint
 import random
 
+
 class MakeTokenizer(Token):
     "处理token的基类"
 
@@ -217,7 +218,7 @@ class Polistar(MakeTokenizer):
         if self.peek() == "=":
             self.match("=")
             value = self.expr()
-            return ["assign_stat", name, value]        
+            return ["assign_stat", name, value]
         # 调用变量的情况
         else:
             return ["use_var", name]
@@ -291,6 +292,25 @@ class Polistar(MakeTokenizer):
             body.append(self.statement())
         self.match("}")
         return ["while", cond, body]
+
+    def for_stat(self):
+        "处理for语句块"
+        self.match("for")
+        self.match("(")
+        cond = []
+        while self.peek() != ")":
+            t = self.statement()
+            if t is not None:
+                cond.append(t)
+        self.match(")")
+        make_var, expr, fin = cond
+        # 处理循环体
+        self.match("{")
+        body = []
+        while self.peek() != "}":
+            body.append(self.statement())
+        self.match("}")
+        return ["for", make_var, expr, fin, body]
 
     def print_stat(self):
         "解析打印语句"
@@ -391,6 +411,8 @@ class Polistar(MakeTokenizer):
             return self.if_stat()
         elif curr == "while":
             return self.while_stat()
+        elif curr == "for":
+            return self.for_stat()
 
         elif curr == ";":
             self.next()
@@ -432,12 +454,9 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    fun test() {
-        var a = random(1, 10)
-        return a
+    for (var i = 1; i < 10; i = i+1) {
+        print(i)
     }
-    var c = test()
-    print(c)
     """
 
     parser = Polistar(Lexer(prog).parse())
