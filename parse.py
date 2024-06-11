@@ -315,7 +315,7 @@ class Polistar(MakeTokenizer):
     def repeat_stat(self):
         "实现对循环体循环n次"
         self.match("repeat")
-        times = self.match("num")
+        times = self.expr()
         self.match("{")
         body = []
         while self.peek() != "}":
@@ -474,7 +474,7 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    repeat 10 {
+    repeat 10 - 8 {
         print("heelo")
     }
     """

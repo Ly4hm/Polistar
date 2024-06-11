@@ -170,7 +170,7 @@ def execute_command(command):
 
     # 对 repeat 语句的支持
     elif cmd == "repeat":
-        times = Token.tk_val(args[0])
+        times = evaluate_expression(args[0])
         body = args[1]
 
         for i in range(0, times):
@@ -289,7 +289,7 @@ def execute_program(program):
 
 if __name__ == "__main__":
     prog = """
-    repeat 10 {
+    repeat 10 - 8 {
         print("heelo")
     }
     """
