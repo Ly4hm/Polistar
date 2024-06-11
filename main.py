@@ -251,6 +251,8 @@ def execute_command(command):
         t.clear()
     elif cmd == "hide":
         t.hideturtle()
+    elif cmd == "maintain":
+        turtle.done()
 
     elif cmd == "circle":
         if len(args) == 2:
@@ -277,40 +279,6 @@ def execute_program(program):
 
 if __name__ == "__main__":
     prog = """
-    var a = -50
-    var color = "yellow"
-    # 设置画笔具体属性
-    set color color
-    set xy (-60,100)
-    set width 10 + random(1,10)
-    # 设置为直接绘制完成
-    set tracer False
-    # 前进
-    forward a
-    left 60
-    forward 50 * 2
-    right 90
-    # 抬笔
-    penup
-    forward 300
-    pendown
-    set color "#0a9d5b"
-    forward 20
-    left 150
-    back 100
-    set xy (0,0)
-    forward 60
-    set xy (0,0)
-    circle 100
-    set color "black"
-    set xy (50,50)
-    circle 100 120
-    # 保存图片
-    save "test.png"
-    print("done")
-    """
-
-    prog = """
     fun test() {
         var a = random(1, 10)
         return a
@@ -321,12 +289,10 @@ if __name__ == "__main__":
     }
     
     forward c * 100
+    maintain
     """
 
     polistar = Polistar(Lexer(prog).parse())
 
     execute_program(polistar.parse())
     # execute_program(tokens)
-
-    # 保持窗口打开
-    turtle.done()

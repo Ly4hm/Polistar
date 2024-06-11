@@ -387,6 +387,11 @@ class Polistar(MakeTokenizer):
         "隐藏光标"
         self.match("hide")
         return ["hide"]
+    
+    def maintain(self):
+        "保持turtle窗口打开"
+        self.match("maintain")
+        return ["maintain"]
 
     def circle(self):
         "绘制圆弧"
@@ -437,6 +442,8 @@ class Polistar(MakeTokenizer):
             return self.circle()
         elif curr == "hide":
             return self.hide()
+        elif curr == "maintain":
+            return self.maintain()
         return self.expr()
 
     def program(self):

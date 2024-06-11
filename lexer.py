@@ -49,7 +49,8 @@ class Lexer():
         "clear",
         "hide",
         "circle",
-        "random"
+        "random",
+        "maintain"
     ]
     blank_lst = [" ", "\t", "\r", "\n"]
     symbols = [",", ":", "+", "-", "*", "/", ";", "(", ")", "{", "}", "[", "]"]
