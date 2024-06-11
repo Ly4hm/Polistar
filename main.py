@@ -156,7 +156,7 @@ def execute_command(command):
         condition = args[0]
         content = args[1]
         
-        if evaluate_expression(condition):
+        while evaluate_expression(condition):
             for line in content:
                 execute_command(line)
 
@@ -299,10 +299,11 @@ if __name__ == "__main__":
     """
 
     prog = """
-    var a = 10
-    a = a - 5
-    set width a
-    set color "red"
+    var a = 1
+    while (a < 26) {
+        print(a)
+        var a = a + 1
+    }
     """
 
     polistar = Polistar(Lexer(prog).parse())

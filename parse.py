@@ -434,10 +434,11 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    var a = 10
-    set width a
-    set color "red"
-    forward a + 100
+    var a = 1
+    while (a < 3) {
+        print(a)
+        var a = a + 1
+    }
     """
 
     parser = Polistar(Lexer(prog).parse())
