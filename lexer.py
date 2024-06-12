@@ -51,7 +51,9 @@ class Lexer():
         "hide",
         "circle",
         "random",
-        "maintain"
+        "maintain",
+        "beginfill",
+        "endfill"
     ]
     blank_lst = [" ", "\t", "\r", "\n"]
     symbols = [",", ":", "+", "-", "*", "/", ";", "(", ")", "{", "}", "[", "]"]
@@ -235,9 +237,14 @@ class Lexer():
 
 if __name__ == "__main__":
     prog = """
-    repeat 10 {
-        print("heelo")
+    beginfill "red"
+    
+    for (var i = 1; i < 5; var i = i + 1) {
+        forward 100
+        left 90
     }
+    
+    endfill
     """
 
     lexer = Lexer(prog)

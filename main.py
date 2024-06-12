@@ -237,6 +237,16 @@ def execute_command(command):
     elif cmd == "pendown":
         t.pendown()
 
+    # 提供对填充的支持
+    elif cmd == "beginfill":
+        color = extract_list(args)
+        if "#" in color:
+            color = hex_to_rgb(color)
+        t.fillcolor(color)
+        t.begin_fill()
+    elif cmd == "endfill":
+        t.end_fill()
+
     elif cmd == "save":
         canvas_width = 1000
         canvas_height = 1000
@@ -289,9 +299,15 @@ def execute_program(program):
 
 if __name__ == "__main__":
     prog = """
-    repeat 10 - 8 {
-        print("heelo")
+    beginfill "red"
+    
+    for (var i = 1; i < 5; var i = i + 1) {
+        forward 100
+        left 90
     }
+    print(random(1,10))
+    endfill
+    maintain
     """
 
     polistar = Polistar(Lexer(prog).parse())

@@ -382,6 +382,17 @@ class Polistar(MakeTokenizer):
         self.match("left")
         args = self.statement()
         return ["left", args]
+    
+    def beginfill(self):
+        "设置填充"
+        self.match("beginfill")
+        args = self.statement()
+        return ["beginfill", args]
+    
+    def endfill(self):
+        "结束填充"
+        self.match("endfill")
+        return ["endfill"]
 
     def clear(self):
         "清空画布"
@@ -447,6 +458,10 @@ class Polistar(MakeTokenizer):
             return self.left()
         elif curr == "right":
             return self.right()
+        elif curr == "beginfill":
+            return self.beginfill()
+        elif curr == "endfill":
+            return self.endfill()
         elif curr == "clear":
             return self.clear()
         elif curr == "save":
@@ -474,9 +489,14 @@ class Polistar(MakeTokenizer):
 
 if __name__ == "__main__":
     prog = """
-    repeat 10 - 8 {
-        print("heelo")
+    beginfill "#ffffff"
+    
+    for (var i = 1; i < 5; var i = i + 1) {
+        forward 100
+        left 90
     }
+    
+    endfill
     """
 
     parser = Polistar(Lexer(prog).parse())
