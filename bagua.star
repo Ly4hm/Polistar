@@ -12,6 +12,9 @@ var MARGIN_LENGTH = 200
 var MARGIN_WIDTH = 2
 var SQRT2 = 1.4142135623730951
 
+## 内部八卦常量
+var RADIUS = 100
+
 # 绘制卦象两短线
 fun two() {
     set width PEN_WIDTH
@@ -99,6 +102,7 @@ fun stored_move(mode) {
 
 
 # 开始绘制
+## 设置是否跟踪过程
 set tracer True
 
 ## 进入初始位置
@@ -110,7 +114,7 @@ forward MARGIN_LENGTH / 2
 pendown
 
 ## 绘制边框
-repeat 9 {
+repeat 8 {
     left 45
     set width MARGIN_WIDTH
     forward MARGIN_LENGTH
@@ -122,9 +126,64 @@ repeat 9 {
 }
 
 ## 绘制内部圆形
-set xy (50,50)
-circle 100 100
+set xy (0,0)
+right 135
+penup
+forward 85
+pendown
+left 90
+circle 100
+
+## 绘制下半个圆弧
+circle 50 180
+left 180
+## 移动到下一个绘画起点
+penup
+circle 50 180
+pendown
+## 绘制另外半个圆弧
+# 设置填充
+beginfill "black"
+circle 50 180
+# 再画一遍保证填充
+## 移动至圆的最下方
+penup
+right 90
 forward 100
+left 90
+pendown
+circle 100 180
+endfill
+
+left 90
+forward 107
+set color "white"
+forward 86
+left 90
+beginfill "white"
+circle 43 180
+endfill
+
+# 绘制阴阳鱼中间的小圆
+penup
+right 90
+forward 35
+right 90
+pendown
+beginfill "white"
+circle 15
+endfill
+
+# 绘制第二个
+penup
+right 90
+forward 100
+pendown
+beginfill "black"
+left 90
+circle 23
+endfill
+
 
 ## 后处理
 save "tmp.png"
