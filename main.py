@@ -9,6 +9,7 @@ from parse import Polistar
 
 # 初始化turtle
 t = turtle.Turtle()
+t.speed(11)
 screen = turtle.Screen()
 screen.colormode(255)
 
