@@ -98,7 +98,8 @@ def call_function(func_name, args):
         raise ValueError(f"Function {func_name} is not defined.")
 
     func_params, func_body = namespace[func_name]
-    local_namespace = {}
+    # 使其可以访问外部变量
+    local_namespace = namespace.copy()
 
     for param, arg in zip(func_params, args):
         local_namespace[Token.tk_val(param)] = evaluate_expression(arg)
